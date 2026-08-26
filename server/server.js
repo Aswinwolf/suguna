@@ -17,7 +17,52 @@ connectDB();
 
 const app = express();
 
-app.use(cors());
+const allowedOrigins = [
+  'http://localhost:5173',
+  'http://localhost:3000',
+  'http://127.0.0.1:5173',
+  'http://127.0.0.1:3000',
+];
+
+if (process.env.CLIENT_URL) {
+  process.env.CLIENT_URL.split(',').forEach((url) => {
+    const cleaned = url.trim().replace(/\/+$/, '');
+    if (cleaned && !allowedOrigins.includes(cleaned)) {
+      allowedOrigins.push(cleaned);
+    }
+  });
+}
+
+const corsOptions = {
+  origin: (origin, callback) => {
+    if (!origin) return callback(null, true);
+
+    const normalizedOrigin = origin.replace(/\/+$/, '');
+    try {
+      const hostname = new URL(origin).hostname;
+      if (
+        allowedOrigins.includes(normalizedOrigin) ||
+        hostname.endsWith('.vercel.app') ||
+        hostname === 'localhost' ||
+        hostname === '127.0.0.1'
+      ) {
+        return callback(null, true);
+      }
+    } catch {
+      if (allowedOrigins.includes(normalizedOrigin)) {
+        return callback(null, true);
+      }
+    }
+
+    return callback(null, true);
+  },
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
+  optionsSuccessStatus: 200,
+};
+
+app.use(cors(corsOptions));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 

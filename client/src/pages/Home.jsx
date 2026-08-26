@@ -16,17 +16,29 @@ const Home = () => {
   const { isAuthenticated, isAdmin } = useAuth();
 
   useEffect(() => {
+    let isMounted = true;
     (async () => {
       try {
         const [p, c] = await Promise.all([productApi.list(), categoryApi.list()]);
-        setProducts(p.data);
-        setCategories(c.data);
-      } catch {
-        setMsg({ type: 'error', text: 'Failed to load store data.' });
+        if (isMounted) {
+          setProducts(p.data || []);
+          setCategories(c.data || []);
+        }
+      } catch (err) {
+        console.error('Failed to load store data:', err);
+        if (isMounted) {
+          setMsg({ type: 'error', text: 'Failed to load store data. Please refresh or check connection.' });
+        }
       } finally {
-        setLoading(false);
+        if (isMounted) {
+          setLoading(false);
+        }
       }
     })();
+
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
   const handleAdd = async (product) => {
