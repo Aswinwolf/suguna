@@ -17,7 +17,7 @@ connectDB();
 
 const app = express();
 
-app.use(cors({ origin: process.env.CLIENT_URL || '*' }));
+app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
@@ -41,8 +41,6 @@ const server = app.listen(PORT, () => {
   console.log(`Server running in ${process.env.NODE_ENV || 'development'} mode on port ${PORT}`);
 });
 
-// Gracefully handle port-already-in-use and other startup errors
-// instead of crashing with an unhandled 'error' event.
 server.on('error', (error) => {
   if (error.code === 'EADDRINUSE') {
     console.error(`\nPort ${PORT} is already in use.`);
