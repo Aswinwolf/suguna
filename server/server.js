@@ -29,8 +29,8 @@ connectDB();
 const app = express();
 
 const allowedOrigins = [
-  '*',
-  '*',
+  'https://suguna.vercel.app/',
+  'https://suguna.vercel.app/',
 ];
 
 if (process.env.CLIENT_URL) {
