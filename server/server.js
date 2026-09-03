@@ -12,16 +12,25 @@ import productRoutes from './routes/productRoutes.js';
 import cartRoutes from './routes/cartRoutes.js';
 import orderRoutes from './routes/orderRoutes.js';
 
+// Service booking module
+import addressRoutes from './routes/addressRoutes.js';
+import serviceCategoryRoutes from './routes/serviceCategoryRoutes.js';
+import repairServiceRoutes from './routes/repairServiceRoutes.js';
+import sparePartRoutes from './routes/sparePartRoutes.js';
+import serviceBookingRoutes from './routes/serviceBookingRoutes.js';
+import technicianRoutes from './routes/technicianRoutes.js';
+import paymentRoutes from './routes/paymentRoutes.js';
+import invoiceRoutes from './routes/invoiceRoutes.js';
+import serviceStatsRoutes from './routes/serviceStatsRoutes.js';
+
 dotenv.config();
 connectDB();
 
 const app = express();
 
 const allowedOrigins = [
-  'http://localhost:5173',
-  'http://localhost:3000',
-  'http://127.0.0.1:5173',
-  'http://127.0.0.1:3000',
+  '*',
+  '*',
 ];
 
 if (process.env.CLIENT_URL) {
@@ -76,6 +85,17 @@ app.use('/api/subcategories', subCategoryRoutes);
 app.use('/api/products', productRoutes);
 app.use('/api/cart', cartRoutes);
 app.use('/api/orders', orderRoutes);
+
+// Service booking module
+app.use('/api/addresses', addressRoutes);
+app.use('/api/service-categories', serviceCategoryRoutes);
+app.use('/api/repair-services', repairServiceRoutes);
+app.use('/api/spare-parts', sparePartRoutes);
+app.use('/api/bookings', serviceBookingRoutes);
+app.use('/api/technicians', technicianRoutes);
+app.use('/api/payments', paymentRoutes);
+app.use('/api/invoices', invoiceRoutes);
+app.use('/api/service-stats', serviceStatsRoutes);
 
 app.use(notFound);
 app.use(errorHandler);

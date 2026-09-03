@@ -48,6 +48,8 @@ export const AuthProvider = ({ children }) => {
     loading,
     isAuthenticated: !!user,
     isAdmin: user?.role === 'admin',
+    isTechnician: user?.role === 'technician',
+    role: user?.role || null,
     login,
     register,
     logout,

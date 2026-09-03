@@ -21,7 +21,9 @@ const Login = () => {
     setLoading(true);
     try {
       const profile = await login(form);
-      navigate(profile.role === 'admin' ? '/admin' : from, { replace: true });
+      const landing =
+        profile.role === 'admin' ? '/admin' : profile.role === 'technician' ? '/technician' : from;
+      navigate(landing, { replace: true });
     } catch (err) {
       setError(err.response?.data?.message || 'Login failed. Please try again.');
     } finally {

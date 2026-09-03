@@ -31,3 +31,17 @@
     @apply rounded-xl border border-slate-200 bg-white shadow-sm;
   }
 }
+
+/* Hide chrome when printing / saving an invoice as PDF. */
+@media print {
+  .no-print {
+    display: none !important;
+  }
+  body {
+    background: #fff;
+  }
+  .print-area {
+    box-shadow: none !important;
+    border: none !important;
+  }
+}

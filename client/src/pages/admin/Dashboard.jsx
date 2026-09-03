@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { productApi, categoryApi, subCategoryApi, orderApi } from '../../services/endpoints.js';
+import { productApi, categoryApi, subCategoryApi, orderApi, serviceStatsApi } from '../../services/endpoints.js';
 import Loader from '../../components/Loader.jsx';
 
 const formatPrice = (n) => `₹${Number(n).toLocaleString('en-IN')}`;
@@ -14,6 +14,7 @@ const Card = ({ label, value, to, accent }) => (
 
 const Dashboard = () => {
   const [stats, setStats] = useState({ products: 0, categories: 0, subcategories: 0, orders: 0, revenue: 0 });
+  const [serviceStats, setServiceStats] = useState(null);
   const [recent, setRecent] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -39,6 +40,9 @@ const Dashboard = () => {
         setLoading(false);
       }
     })();
+
+    // Service-module metrics load independently (non-blocking).
+    serviceStatsApi.get().then((r) => setServiceStats(r.data)).catch(() => {});
   }, []);
 
   if (loading) return <Loader label="Loading dashboard..." />;
@@ -54,6 +58,17 @@ const Dashboard = () => {
         <Card label="SubCategories" value={stats.subcategories} to="/admin/subcategories" />
         <Card label="Orders" value={stats.orders} to="/admin/orders" />
         <Card label="Revenue" value={formatPrice(stats.revenue)} to="/admin/orders" />
+      </div>
+
+      {/* Service booking module overview */}
+      <h2 className="mt-10 text-lg font-bold text-slate-800">Service Bookings</h2>
+      <p className="mt-1 text-sm text-slate-500">Urban Company style repair &amp; service metrics.</p>
+      <div className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-5">
+        <Card label="Total Bookings" value={serviceStats ? serviceStats.totalBookings : '—'} to="/admin/bookings" />
+        <Card label="Completed" value={serviceStats ? serviceStats.completedServices : '—'} to="/admin/bookings" />
+        <Card label="Active Technicians" value={serviceStats ? serviceStats.activeTechnicians : '—'} to="/admin/technicians" />
+        <Card label="Service Revenue" value={serviceStats ? formatPrice(serviceStats.revenue) : '—'} to="/admin/payments" />
+        <Card label="Pending Payments" value={serviceStats ? serviceStats.pendingPayments : '—'} to="/admin/payments" />
       </div>
 
       <div className="card mt-8 p-6">

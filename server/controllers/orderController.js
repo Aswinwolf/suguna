@@ -1,8 +1,27 @@
 import asyncHandler from '../utils/asyncHandler.js';
 import Order from '../models/Order.js';
 import Cart from '../models/Cart.js';
+import Address from '../models/Address.js';
+import { isErodePincode } from '../utils/serviceArea.js';
 
 export const placeOrder = asyncHandler(async (req, res) => {
+  // Service-area guard: checkout requires an Erode delivery address.
+  const deliveryAddress =
+    (await Address.findOne({ user: req.user._id, isDefault: true })) ||
+    (await Address.findOne({ user: req.user._id }));
+  if (!deliveryAddress) {
+    return res.status(400).json({
+      success: false,
+      message: 'Please add an Erode delivery address before checkout.',
+    });
+  }
+  if (!isErodePincode(deliveryAddress.pincode)) {
+    return res.status(400).json({
+      success: false,
+      message: 'We currently deliver to Erode only (pincode 638xxx).',
+    });
+  }
+
   const cart = await Cart.findOne({ userId: req.user._id }).populate('products.productId');
 
   if (!cart || cart.products.length === 0) {

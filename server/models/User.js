@@ -25,8 +25,21 @@ const userSchema = new mongoose.Schema(
     },
     role: {
       type: String,
-      enum: ['user', 'admin'],
+      enum: ['user', 'admin', 'technician'],
       default: 'user',
+    },
+    // Technician-specific profile fields (unused for regular users/admins)
+    phone: {
+      type: String,
+      trim: true,
+    },
+    specializations: {
+      type: [String],
+      default: [],
+    },
+    isActive: {
+      type: Boolean,
+      default: true,
     },
   },
   { timestamps: true }

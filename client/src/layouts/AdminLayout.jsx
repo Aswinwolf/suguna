@@ -9,6 +9,16 @@ const nav = [
   { to: '/admin/orders', label: 'Orders' },
 ];
 
+// Service booking module (grouped separately in the sidebar).
+const serviceNav = [
+  { to: '/admin/service-categories', label: 'Service Categories' },
+  { to: '/admin/repair-services', label: 'Repair Services' },
+  { to: '/admin/spare-parts', label: 'Spare Parts' },
+  { to: '/admin/technicians', label: 'Technicians' },
+  { to: '/admin/bookings', label: 'Bookings' },
+  { to: '/admin/payments', label: 'Payments' },
+];
+
 const AdminLayout = () => {
   const { user, logout } = useAuth();
 
@@ -37,8 +47,13 @@ const AdminLayout = () => {
       <div className="mx-auto flex max-w-7xl flex-col gap-6 px-4 py-6 md:flex-row">
         <aside className="md:w-56 md:shrink-0">
           <nav className="card flex gap-1 overflow-x-auto p-2 md:flex-col md:overflow-visible">
+            <p className="hidden px-3 pb-1 pt-2 text-[10px] font-bold uppercase tracking-wide text-slate-400 md:block">Store</p>
             {nav.map((n) => (
               <NavLink key={n.to} to={n.to} end={n.end} className={linkClass}>{n.label}</NavLink>
+            ))}
+            <p className="hidden px-3 pb-1 pt-3 text-[10px] font-bold uppercase tracking-wide text-slate-400 md:block">Services</p>
+            {serviceNav.map((n) => (
+              <NavLink key={n.to} to={n.to} className={linkClass}>{n.label}</NavLink>
             ))}
           </nav>
         </aside>

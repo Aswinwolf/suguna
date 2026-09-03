@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useCart } from '../context/CartContext.jsx';
+import { useAddress } from '../context/AddressContext.jsx';
 import { orderApi } from '../services/endpoints.js';
 import Loader from '../components/Loader.jsx';
 import Alert from '../components/Alert.jsx';
@@ -9,6 +10,7 @@ const formatPrice = (n) => `₹${Number(n).toLocaleString('en-IN')}`;
 
 const Cart = () => {
   const { cart, loading, total, updateQuantity, removeFromCart, clearCart, refresh } = useCart();
+  const { defaultAddress } = useAddress();
   const [placing, setPlacing] = useState(false);
   const [msg, setMsg] = useState(null);
   const navigate = useNavigate();
@@ -93,7 +95,27 @@ const Cart = () => {
                   <span>{formatPrice(total)}</span>
                 </div>
               </div>
-              <button onClick={handlePlaceOrder} disabled={placing} className="btn-primary mt-6 w-full">
+
+              {/* Delivery address (Erode only) */}
+              <div className="mt-4 rounded-lg bg-slate-50 p-3 text-sm">
+                {defaultAddress ? (
+                  <div>
+                    <p className="text-xs font-semibold uppercase text-slate-400">Deliver to</p>
+                    <p className="font-medium text-slate-700">{defaultAddress.fullName}</p>
+                    <p className="text-slate-500">
+                      {defaultAddress.area}, {defaultAddress.city} - {defaultAddress.pincode}
+                    </p>
+                    <Link to="/addresses" className="text-xs font-medium text-brand-700 hover:underline">Change address</Link>
+                  </div>
+                ) : (
+                  <p className="text-slate-500">
+                    We deliver to <span className="font-semibold">Erode</span> only.{' '}
+                    <Link to="/addresses" className="font-medium text-brand-700 hover:underline">Add a delivery address</Link> to checkout.
+                  </p>
+                )}
+              </div>
+
+              <button onClick={handlePlaceOrder} disabled={placing || !defaultAddress} className="btn-primary mt-4 w-full">
                 {placing ? 'Placing order...' : 'Place Order'}
               </button>
             </div>

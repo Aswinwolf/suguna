@@ -8,8 +8,160 @@ import SubCategory from '../models/SubCategory.js';
 import Product from '../models/Product.js';
 import Cart from '../models/Cart.js';
 import Order from '../models/Order.js';
+import ServiceCategory from '../models/ServiceCategory.js';
+import RepairService from '../models/RepairService.js';
+import SparePart from '../models/SparePart.js';
 
 dotenv.config();
+
+// ─── Service categories (Urban Company style) ────────────────────────────────
+const serviceCategorySeed = [
+  {
+    name: 'AC Repair',
+    icon: '❄️',
+    visitingCharge: 199,
+    description: 'Servicing, gas refill and repair for all AC types.',
+    issues: ['Not cooling', 'Water leakage', 'Noisy operation', 'Gas refill', 'Installation']
+  },
+  {
+    name: 'Refrigerator Repair',
+    icon: '🧊',
+    visitingCharge: 199,
+    description: 'Fridge cooling, compressor and gas issues.',
+    issues: ['Not cooling', 'Excess ice', 'Water leakage', 'Compressor noise', 'Door not sealing']
+  },
+  {
+    name: 'Washing Machine Repair',
+    icon: '🌀',
+    visitingCharge: 149,
+    description: 'Drum, motor and drainage repairs.',
+    issues: ['Not spinning', 'Water not draining', 'Noise/vibration', 'Not powering on']
+  },
+  {
+    name: 'Microwave Repair',
+    icon: '🍽️',
+    visitingCharge: 149,
+    description: 'Heating, turntable and panel repairs.',
+    issues: ['Not heating', 'Turntable not rotating', 'Sparking', 'Display not working']
+  },
+  {
+    name: 'Water Purifier Repair',
+    icon: '💧',
+    visitingCharge: 149,
+    description: 'Filter, membrane and pump servicing.',
+    issues: ['No water flow', 'Bad taste', 'Filter replacement', 'Leakage']
+  },
+  {
+    name: 'TV Repair',
+    icon: '📺',
+    visitingCharge: 199,
+    description: 'Panel, display and sound repairs.',
+    issues: ['No display', 'No sound', 'Lines on screen', 'Not powering on']
+  },
+
+  // NEW SERVICES
+
+  {
+    name: 'Mixer Grinder Repair',
+    icon: '🥤',
+    visitingCharge: 149,
+    description: 'Motor, blade and switch repairs.',
+    issues: ['Motor not working', 'Blade issue', 'Burning smell', 'Noise', 'Jar leakage']
+  },
+  {
+    name: 'Gas Stove Repair',
+    icon: '🔥',
+    visitingCharge: 149,
+    description: 'Burner, ignition and gas flow repairs.',
+    issues: ['Gas leakage', 'Burner not lighting', 'Low flame', 'Ignition issue']
+  },
+  {
+    name: 'Gas Pipeline Service',
+    icon: '⛽',
+    visitingCharge: 249,
+    description: 'Gas pipeline installation and leak inspection.',
+    issues: ['Gas leakage', 'Pipe replacement', 'New connection', 'Pressure issue']
+  },
+  {
+    name: 'Ceiling Fan Repair',
+    icon: '🪭',
+    visitingCharge: 99,
+    description: 'Capacitor, motor and regulator repairs.',
+    issues: ['Not rotating', 'Slow speed', 'Noise', 'Regulator issue']
+  },
+  {
+    name: 'Table Fan Repair',
+    icon: '🌪️',
+    visitingCharge: 99,
+    description: 'Motor and blade repairs.',
+    issues: ['Not rotating', 'Motor issue', 'Noise', 'Speed issue']
+  },
+  {
+    name: 'Exhaust Fan Repair',
+    icon: '💨',
+    visitingCharge: 99,
+    description: 'Motor and ventilation repairs.',
+    issues: ['Not working', 'Noise', 'Low airflow']
+  },
+  {
+    name: 'Geyser Repair',
+    icon: '🚿',
+    visitingCharge: 149,
+    description: 'Heating element and thermostat repairs.',
+    issues: ['No hot water', 'Leakage', 'Thermostat issue', 'Power issue']
+  },
+  {
+    name: 'Induction Stove Repair',
+    icon: '🍳',
+    visitingCharge: 149,
+    description: 'PCB and heating repairs.',
+    issues: ['Not heating', 'Display issue', 'Power issue']
+  },
+  {
+    name: 'Chimney Repair',
+    icon: '🏠',
+    visitingCharge: 199,
+    description: 'Kitchen chimney servicing and repairs.',
+    issues: ['Low suction', 'Noise', 'Motor issue', 'Filter replacement']
+  },
+  {
+    name: 'Vacuum Cleaner Repair',
+    icon: '🧹',
+    visitingCharge: 149,
+    description: 'Motor and suction repairs.',
+    issues: ['Low suction', 'Motor issue', 'Power issue']
+  },
+  {
+    name: 'Iron Box Repair',
+    icon: '👔',
+    visitingCharge: 99,
+    description: 'Heating and thermostat repairs.',
+    issues: ['Not heating', 'Power issue', 'Thermostat issue']
+  }
+];
+
+// name → { charge } ; serviceCategory left null so they apply everywhere.
+const repairServiceSeed = [
+  { name: 'Gas Refill', charge: 1500 },
+  { name: 'Compressor Repair', charge: 2500 },
+  { name: 'Wiring Repair', charge: 600 },
+  { name: 'Fan Motor Replacement', charge: 1200 },
+  { name: 'General Servicing', charge: 499 },
+  { name: 'Drainage Cleaning', charge: 400 },
+  { name: 'Sensor Repair', charge: 800 },
+  { name: 'PCB Repair', charge: 1800 },
+];
+
+const sparePartSeed = [
+  { name: 'Capacitor', price: 350 },
+  { name: 'Compressor', price: 4500 },
+  { name: 'Motor', price: 1600 },
+  { name: 'PCB Board', price: 2200 },
+  { name: 'Thermostat', price: 550 },
+  { name: 'RO Membrane', price: 1200 },
+  { name: 'Filter Cartridge', price: 450 },
+  { name: 'Display Panel', price: 3000 },
+];
 
 // ─── Category names ───────────────────────────────────────────────────────────
 const categories = [
@@ -23,8 +175,7 @@ const categories = [
   'Small Appliances',
 ];
 
-// ─── SubCategories per category ───────────────────────────────────────────────
-// Format: { category: '<CategoryName>', name: '<SubCategoryName>' }
+
 const subCategorySeed = [
   // Refrigerators
   { category: 'Refrigerators', name: 'Double Door' },
@@ -160,11 +311,15 @@ const importData = async () => {
       SubCategory.deleteMany(),
       Category.deleteMany(),
       User.deleteMany(),
+      ServiceCategory.deleteMany(),
+      RepairService.deleteMany(),
+      SparePart.deleteMany(),
     ]);
 
     // 1. Users
     await User.create({ name: 'Admin', email: 'aswinadmin@suguna.com', password: 'aswinadmin123', role: 'admin' });
     await User.create({ name: 'Demo User', email: 'aswinuser@suguna.com', password: 'aswinuser123', role: 'user' });
+    await User.create({ name: 'Ravi Technician', email: 'aswintech@suguna.com', password: 'aswintech123', role: 'technician', phone: '9876543210', specializations: ['AC Repair', 'Refrigerator Repair'] });
 
     // 2. Categories
     const createdCategories = await Category.insertMany(
@@ -205,9 +360,16 @@ const importData = async () => {
 
     await Product.insertMany(products);
 
+    // 5. Service module masters
+    const createdServiceCategories = await ServiceCategory.insertMany(serviceCategorySeed);
+    const createdRepairServices = await RepairService.insertMany(repairServiceSeed);
+    const createdSpareParts = await SparePart.insertMany(sparePartSeed);
+
     console.log(`Seeded ${createdCategories.length} categories, ${createdSubCategories.length} subcategories, and ${products.length} products successfully.`);
-    console.log('Admin login: aswinadmin@suguna.com / aswinadmin123');
-    console.log('User login:  aswinuser@suguna.com / aswinuser123');
+    console.log(`Seeded ${createdServiceCategories.length} service categories, ${createdRepairServices.length} repair services, ${createdSpareParts.length} spare parts.`);
+    console.log('Admin login:      aswinadmin@suguna.com / aswinadmin123');
+    console.log('User login:       aswinuser@suguna.com / aswinuser123');
+    console.log('Technician login: aswintech@suguna.com / aswintech123');
     process.exit(0);
   } catch (error) {
     console.error(`Seed error: ${error.message}`);

@@ -41,3 +41,44 @@ export const productRules = [
   body('mrp').isFloat({ min: 0 }).withMessage('MRP must be a positive number'),
   body('price').isFloat({ min: 0 }).withMessage('Price must be a positive number'),
 ];
+
+// ------------------------- Service module rules -------------------------
+
+export const addressRules = [
+  body('fullName').trim().notEmpty().withMessage('Full name is required'),
+  body('mobile').trim().matches(/^[0-9]{10}$/).withMessage('Mobile number must be 10 digits'),
+  body('houseNo').trim().notEmpty().withMessage('House number is required'),
+  body('street').trim().notEmpty().withMessage('Street is required'),
+  body('area').trim().notEmpty().withMessage('Area is required'),
+  // City/State are fixed to Erode/Tamil Nadu server-side, so not required here.
+  body('pincode').trim().matches(/^638\d{3}$/).withMessage('We currently serve Erode only (pincode 638xxx)'),
+  body('addressType').optional().isIn(['Home', 'Office']).withMessage('Invalid address type'),
+];
+
+export const serviceCategoryRules = [
+  body('name').trim().notEmpty().withMessage('Service category name is required'),
+  body('visitingCharge').optional().isFloat({ min: 0 }).withMessage('Visiting charge must be positive'),
+];
+
+export const repairServiceRules = [
+  body('name').trim().notEmpty().withMessage('Repair service name is required'),
+  body('charge').isFloat({ min: 0 }).withMessage('Charge must be a positive number'),
+];
+
+export const sparePartRules = [
+  body('name').trim().notEmpty().withMessage('Spare part name is required'),
+  body('price').isFloat({ min: 0 }).withMessage('Price must be a positive number'),
+];
+
+export const technicianRules = [
+  body('name').trim().notEmpty().withMessage('Name is required').isLength({ min: 2 }),
+  body('email').trim().isEmail().withMessage('A valid email is required').normalizeEmail(),
+  body('password').isLength({ min: 6 }).withMessage('Password must be at least 6 characters'),
+];
+
+export const bookingRules = [
+  body('serviceCategory').notEmpty().withMessage('Service category is required'),
+  body('issue').trim().notEmpty().withMessage('Issue type is required'),
+  body('scheduledDate').notEmpty().withMessage('Date is required'),
+  body('timeSlot').trim().notEmpty().withMessage('Time slot is required'),
+];

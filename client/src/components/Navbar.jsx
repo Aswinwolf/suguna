@@ -4,7 +4,7 @@ import { useAuth } from '../context/AuthContext.jsx';
 import { useCart } from '../context/CartContext.jsx';
 
 const Navbar = () => {
-  const { user, isAuthenticated, isAdmin, logout } = useAuth();
+  const { user, isAuthenticated, isAdmin, isTechnician, logout } = useAuth();
   const { count } = useCart();
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
@@ -33,12 +33,15 @@ const Navbar = () => {
         <nav className="hidden items-center gap-1 md:flex">
           <NavLink to="/" className={linkClass} end>Home</NavLink>
           <NavLink to="/products" className={linkClass}>Products</NavLink>
-          {isAuthenticated && !isAdmin && <NavLink to="/orders" className={linkClass}>My Orders</NavLink>}
+          <NavLink to="/services" className={linkClass}>Services</NavLink>
+          {isAuthenticated && !isAdmin && !isTechnician && <NavLink to="/orders" className={linkClass}>My Orders</NavLink>}
+          {isAuthenticated && !isAdmin && !isTechnician && <NavLink to="/bookings" className={linkClass}>My Services</NavLink>}
+          {isTechnician && <NavLink to="/technician" className={linkClass}>Technician</NavLink>}
           {isAdmin && <NavLink to="/admin" className={linkClass}>Admin</NavLink>}
         </nav>
 
         <div className="hidden items-center gap-2 md:flex">
-          {!isAdmin && (
+          {!isAdmin && !isTechnician && (
             <Link to="/cart" className="relative rounded-lg p-2 hover:bg-slate-100" aria-label="Cart">
               <CartIcon />
               {count > 0 && (
@@ -72,8 +75,12 @@ const Navbar = () => {
         <nav className="space-y-1 border-t border-slate-200 bg-white px-4 py-3 md:hidden">
           <NavLink to="/" className={linkClass} onClick={() => setOpen(false)} end>Home</NavLink>
           <NavLink to="/products" className={linkClass} onClick={() => setOpen(false)}>Products</NavLink>
-          {!isAdmin && <NavLink to="/cart" className={linkClass} onClick={() => setOpen(false)}>Cart ({count})</NavLink>}
-          {isAuthenticated && !isAdmin && <NavLink to="/orders" className={linkClass} onClick={() => setOpen(false)}>My Orders</NavLink>}
+          <NavLink to="/services" className={linkClass} onClick={() => setOpen(false)}>Services</NavLink>
+          {!isAdmin && !isTechnician && <NavLink to="/cart" className={linkClass} onClick={() => setOpen(false)}>Cart ({count})</NavLink>}
+          {isAuthenticated && !isAdmin && !isTechnician && <NavLink to="/orders" className={linkClass} onClick={() => setOpen(false)}>My Orders</NavLink>}
+          {isAuthenticated && !isAdmin && !isTechnician && <NavLink to="/bookings" className={linkClass} onClick={() => setOpen(false)}>My Services</NavLink>}
+          {isAuthenticated && !isAdmin && !isTechnician && <NavLink to="/addresses" className={linkClass} onClick={() => setOpen(false)}>Addresses</NavLink>}
+          {isTechnician && <NavLink to="/technician" className={linkClass} onClick={() => setOpen(false)}>Technician</NavLink>}
           {isAdmin && <NavLink to="/admin" className={linkClass} onClick={() => setOpen(false)}>Admin</NavLink>}
           <div className="pt-2">
             {isAuthenticated ? (
